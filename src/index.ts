@@ -36,8 +36,8 @@ app.get("/access_point", async () => {
 
     await stopWifiHotspot()
     await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-    await stopAvahid()
     await disableAvahid()
+    await stopAvahid()
 
     writeFileSync("/etc/hostapd/hostapd.conf", createHostapdConf({
         ssid: await configureHotspotSSID()
