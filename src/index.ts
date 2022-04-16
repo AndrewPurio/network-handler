@@ -1,10 +1,11 @@
 import cors from "cors"
-import express from 'express'
+import express, { response } from 'express'
 import { writeFileSync } from "fs"
 import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, disableAvahid, enableHostapd, restartHotspot, startDnsMasq, startHostapd, stopAvahid, stopWifiHotspot } from "./utils/access_point"
 import { staticIpAddress } from "./utils/access_point/config"
 import { restartDHCPCD, updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
+import { getWlanStatus } from "./utils/wifi"
 
 const app = express()
 const port = 3001
@@ -42,7 +43,8 @@ app.get("/access_point", async () => {
         ssid: await configureHotspotSSID()
     }))
 
-    await restartHotspot()
+    restartHotspot()
+    response.json("Success")
 })
 
 app.listen(port, () => {
