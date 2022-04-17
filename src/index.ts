@@ -60,10 +60,10 @@ const setAccessPoint = async () => {
     }))
 }
 
-if(!reboot) {
-    setAccessPoint()
-}
-
 app.listen(port, () => {
+    if(!reboot) {
+        setAccessPoint()
+    }
+    
     console.log(`> Ready on http://localhost:${port}`);
 })
