@@ -1,5 +1,5 @@
 import cors from "cors"
-import express, { response } from 'express'
+import express from 'express'
 import { writeFileSync } from "fs"
 import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, disableAvahid, enableHostapd, restartHotspot, startDnsMasq, startHostapd, stopAvahid, stopWifiHotspot } from "./utils/access_point"
 import { staticIpAddress } from "./utils/access_point/config"
@@ -30,7 +30,7 @@ app.post("/test", (request, response) => {
     response.json("Test response")
 })
 
-app.get("/access_point", () => {
+app.get("/access_point", (request, response) => {
     writeFileSync("./config.json", JSON.stringify({
         reboot: false
     }))
@@ -64,6 +64,6 @@ app.listen(port, () => {
     if(!reboot) {
         setAccessPoint()
     }
-    
+
     console.log(`> Ready on http://localhost:${port}`);
 })
