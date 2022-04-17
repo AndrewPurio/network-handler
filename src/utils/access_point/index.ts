@@ -112,6 +112,9 @@ export const stopWifiHotspot = async () => {
 
 export const configureHotspotSSID = async () => {
     const { stdout: serialNumber } = await getDeviceSerialNumber()
+
+    console.log("Serial Number:", serialNumber)
+
     const last_4_characters = /\w{4}$/
     const id = last_4_characters.exec(serialNumber)
 

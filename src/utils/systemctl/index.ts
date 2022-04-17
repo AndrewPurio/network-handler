@@ -52,3 +52,11 @@ export const getDeviceSerialNumber = async () => {
         stdout, stderr
     }
 }
+
+export const deviceReboot = async () => {
+    const { stdout, stderr } = await execute("sudo reboot")
+
+    return {
+        stdout, stderr
+    }
+}
