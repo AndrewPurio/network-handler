@@ -5,7 +5,6 @@ import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, 
 import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
-import { reboot } from "./config.json"
 import { deviceReboot } from "./utils/systemctl"
 
 const app = express()
@@ -44,23 +43,28 @@ const setAccessPoint = async () => {
         staticIpAddress
     }
 
+    const ssid = await configureHotspotSSID()
+    const hostapdConf = createHostapdConf({ ssid })
+
     await stopWifiHotspot()
     await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
     await disableAvahid()
     await stopAvahid()
 
-    writeFileSync("/etc/hostapd/hostapd.conf", createHostapdConf({
-        ssid: await configureHotspotSSID()
-    }))
+    writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
 
     restartHotspot()
-
+    
     writeFileSync("./config.json", JSON.stringify({
         reboot: true
     }))
 }
 
-app.listen(port, () => {
+app.listen(port, async () => {
+    const { reboot } = await import("./config.json")
+
+    console.log("Reboot before setup:", reboot)
+
     if(!reboot) {
         setAccessPoint()
     }
