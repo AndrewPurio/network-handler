@@ -9,7 +9,7 @@ export const killWpaSupplicant = async () => {
 }
 
 export const getWlanStatus = async () => {
-    const { stdout, stderr } = await execute("wpa_cli -wlan0 status") 
+    const { stdout, stderr } = await execute("wpa_cli -iwlan0 status") 
 
     return {
         stdout, stderr

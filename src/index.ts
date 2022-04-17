@@ -6,7 +6,7 @@ import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
 import { deviceReboot } from "./utils/systemctl"
-import { killWpaSupplicant } from "./utils/wifi"
+import { getWlanStatus, killWpaSupplicant } from "./utils/wifi"
 
 const app = express()
 const port = 3001
@@ -14,20 +14,10 @@ const port = 3001
 app.use(express.json())
 app.use(cors())
 
-app.get("/", (request, response) => {
-    response.json(
-        createDHCPCDConfigForHostapd({
-            staticIpAddress
-        })
-    )
-})
+app.get("/wifi", async (request, response) => {
+    const { stdout } = await getWlanStatus()
 
-app.post("/test", (request, response) => {
-    const { body } = request
-
-    console.log("Body:", body)
-
-    response.json("Test response")
+    response.json(stdout)
 })
 
 app.get("/access_point", async (request, response) => {
@@ -54,10 +44,6 @@ const setAccessPoint = async () => {
         await killWpaSupplicant()
 
         restartHotspot()
-
-        writeFileSync("./config.json", JSON.stringify({
-            reboot: true
-        }))
     } catch (error) {
         console.log(error)
     }

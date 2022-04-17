@@ -10,7 +10,7 @@ const killWpaSupplicant = async () => {
 };
 exports.killWpaSupplicant = killWpaSupplicant;
 const getWlanStatus = async () => {
-    const { stdout, stderr } = await (0, execute_1.execute)("wpa_cli -wlan0 status");
+    const { stdout, stderr } = await (0, execute_1.execute)("wpa_cli -iwlan0 status");
     return {
         stdout, stderr
     };

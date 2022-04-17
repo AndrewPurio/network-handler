@@ -15,15 +15,9 @@ const app = (0, express_1.default)();
 const port = 3001;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
-app.get("/", (request, response) => {
-    response.json((0, access_point_1.createDHCPCDConfigForHostapd)({
-        staticIpAddress: config_1.staticIpAddress
-    }));
-});
-app.post("/test", (request, response) => {
-    const { body } = request;
-    console.log("Body:", body);
-    response.json("Test response");
+app.get("/wifi", async (request, response) => {
+    const { stdout } = await (0, wifi_1.getWlanStatus)();
+    response.json(stdout);
 });
 app.get("/access_point", async (request, response) => {
     setAccessPoint();
@@ -43,9 +37,6 @@ const setAccessPoint = async () => {
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
         await (0, wifi_1.killWpaSupplicant)();
         (0, access_point_1.restartHotspot)();
-        (0, fs_1.writeFileSync)("./config.json", JSON.stringify({
-            reboot: true
-        }));
     }
     catch (error) {
         console.log(error);
