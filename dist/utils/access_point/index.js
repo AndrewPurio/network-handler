@@ -25,7 +25,7 @@ const createDHCPCDConfigForHostapd = (config) => {
     static ip_address={{staticIpAddress}}/24
     nohook wpa_supplicant
     `;
-    return mustache_1.default.render(template, config);
+    return mustache_1.default.render(template.replace("\t", ""), config);
 };
 exports.createDHCPCDConfigForHostapd = createDHCPCDConfigForHostapd;
 const createHostapdConf = (config) => {
@@ -46,7 +46,7 @@ const createHostapdConf = (config) => {
     wpa_pairwise=TKIP
     rsn_pairwise=CCMP
     `;
-    return mustache_1.default.render(template, config);
+    return mustache_1.default.render(template.replace("\t", ""), config);
 };
 exports.createHostapdConf = createHostapdConf;
 const startDnsMasq = async () => {

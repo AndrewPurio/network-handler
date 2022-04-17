@@ -22,7 +22,7 @@ export const createDHCPCDConfigForHostapd = (config: DHCPCDHostapdConfig) => {
     nohook wpa_supplicant
     `
 
-    return Mustache.render(template, config)
+    return Mustache.render(template.replace("\t", ""), config)
 }
 
 export const createHostapdConf = (config: {
@@ -46,7 +46,7 @@ export const createHostapdConf = (config: {
     rsn_pairwise=CCMP
     `
 
-    return Mustache.render(template, config)
+    return Mustache.render(template.replace("\t", ""), config)
 }
 
 export const startDnsMasq = async () => {
