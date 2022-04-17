@@ -111,14 +111,16 @@ export const stopWifiHotspot = async () => {
 }
 
 export const configureHotspotSSID = async () => {
-    const { stdout: serialNumber } = await getDeviceSerialNumber()
+    const { stdout } = await getDeviceSerialNumber()
 
-    console.log("Serial Number:", serialNumber)
+    const serialNumber = stdout.replace(/\s/, "")
 
     const last_4_characters = /\w{4}$/
     const id = last_4_characters.exec(serialNumber)
 
-    if(!id)
+    console.log("Serial Number:", serialNumber, id)
+
+    if (!id)
         throw new Error("Failed to get the device serial number")
 
     const ssid = `Rest_Node_${id[0]}`
