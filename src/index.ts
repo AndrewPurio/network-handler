@@ -15,9 +15,9 @@ app.use(express.json())
 app.use(cors())
 
 app.get("/wifi", async (request, response) => {
-    const { stdout } = await getWlanStatus()
+    const wifiStatus = await getWlanStatus()
 
-    response.json(stdout)
+    response.json(wifiStatus)
 })
 
 app.get("/access_point", async (request, response) => {

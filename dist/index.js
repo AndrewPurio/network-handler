@@ -16,8 +16,8 @@ const port = 3001;
 app.use(express_1.default.json());
 app.use((0, cors_1.default)());
 app.get("/wifi", async (request, response) => {
-    const { stdout } = await (0, wifi_1.getWlanStatus)();
-    response.json(stdout);
+    const wifiStatus = await (0, wifi_1.getWlanStatus)();
+    response.json(wifiStatus);
 });
 app.get("/access_point", async (request, response) => {
     setAccessPoint();
