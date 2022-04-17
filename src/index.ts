@@ -38,7 +38,6 @@ app.get("/access_point", async (request, response) => {
     const config = await import("./config.json")
 
     response.json(config)
-    deviceReboot()
 })
 
 const setAccessPoint = async () => {
@@ -57,7 +56,7 @@ const setAccessPoint = async () => {
 
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         await killWpaSupplicant()
-        
+
         restartHotspot()
 
         writeFileSync("./config.json", JSON.stringify({

@@ -33,7 +33,6 @@ const access_point_1 = require("./utils/access_point");
 const config_1 = require("./utils/access_point/config");
 const dhcpcd_1 = require("./utils/dhcpcd");
 const types_1 = require("./utils/dhcpcd/types");
-const systemctl_1 = require("./utils/systemctl");
 const wifi_1 = require("./utils/wifi");
 const app = (0, express_1.default)();
 const port = 3001;
@@ -55,7 +54,6 @@ app.get("/access_point", async (request, response) => {
     }));
     const config = await Promise.resolve().then(() => __importStar(require("./config.json")));
     response.json(config);
-    (0, systemctl_1.deviceReboot)();
 });
 const setAccessPoint = async () => {
     const dhcpcdConfig = {
