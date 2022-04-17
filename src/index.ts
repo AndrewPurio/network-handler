@@ -6,6 +6,7 @@ import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
 import { deviceReboot } from "./utils/systemctl"
+import { killWpaSupplicant } from "./utils/wifi"
 
 const app = express()
 const port = 3001
@@ -55,7 +56,8 @@ const setAccessPoint = async () => {
         await stopAvahid()
 
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
-
+        await killWpaSupplicant()
+        
         restartHotspot()
 
         writeFileSync("./config.json", JSON.stringify({

@@ -106,7 +106,7 @@ exports.stopWifiHotspot = stopWifiHotspot;
 const configureHotspotSSID = async () => {
     const { stdout } = await (0, systemctl_1.getDeviceSerialNumber)();
     const serialNumber = stdout.replace(/\s/, "");
-    const last_4_characters = /\w{4}$/;
+    const last_4_characters = /\w{4}\b/;
     const id = last_4_characters.exec(serialNumber);
     console.log("Serial Number:", serialNumber);
     console.log("Id:", id);

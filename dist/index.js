@@ -34,6 +34,7 @@ const config_1 = require("./utils/access_point/config");
 const dhcpcd_1 = require("./utils/dhcpcd");
 const types_1 = require("./utils/dhcpcd/types");
 const systemctl_1 = require("./utils/systemctl");
+const wifi_1 = require("./utils/wifi");
 const app = (0, express_1.default)();
 const port = 3001;
 app.use(express_1.default.json());
@@ -68,6 +69,7 @@ const setAccessPoint = async () => {
         await (0, access_point_1.disableAvahid)();
         await (0, access_point_1.stopAvahid)();
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
+        await (0, wifi_1.killWpaSupplicant)();
         (0, access_point_1.restartHotspot)();
         (0, fs_1.writeFileSync)("./config.json", JSON.stringify({
             reboot: true

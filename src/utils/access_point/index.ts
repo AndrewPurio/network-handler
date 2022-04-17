@@ -115,7 +115,7 @@ export const configureHotspotSSID = async () => {
 
     const serialNumber = stdout.replace(/\s/, "")
 
-    const last_4_characters = /\w{4}$/
+    const last_4_characters = /\w{4}\b/
     const id = last_4_characters.exec(serialNumber)
 
     console.log("Serial Number:", serialNumber)
