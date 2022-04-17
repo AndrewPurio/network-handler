@@ -45,21 +45,25 @@ const setAccessPoint = async () => {
         staticIpAddress
     }
 
-    const ssid = await configureHotspotSSID()
-    const hostapdConf = createHostapdConf({ ssid })
+    try {
+        const ssid = await configureHotspotSSID()
+        const hostapdConf = createHostapdConf({ ssid })
 
-    await stopWifiHotspot()
-    await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-    await disableAvahid()
-    await stopAvahid()
+        await stopWifiHotspot()
+        await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
+        await disableAvahid()
+        await stopAvahid()
 
-    writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
 
-    restartHotspot()
+        restartHotspot()
 
-    writeFileSync("./config.json", JSON.stringify({
-        reboot: true
-    }))
+        writeFileSync("./config.json", JSON.stringify({
+            reboot: true
+        }))
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 app.listen(port, async () => {
@@ -67,7 +71,7 @@ app.listen(port, async () => {
 
     console.log("Reboot before setup:", reboot)
 
-    if(!reboot) {
+    if (!reboot) {
         setAccessPoint()
     }
 

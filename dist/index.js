@@ -60,17 +60,22 @@ const setAccessPoint = async () => {
     const dhcpcdConfig = {
         staticIpAddress: config_1.staticIpAddress
     };
-    const ssid = await (0, access_point_1.configureHotspotSSID)();
-    const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid });
-    await (0, access_point_1.stopWifiHotspot)();
-    await (0, dhcpcd_1.updateDHCPCDConfig)(types_1.NetworkState.ACCESS_POINT, dhcpcdConfig);
-    await (0, access_point_1.disableAvahid)();
-    await (0, access_point_1.stopAvahid)();
-    (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
-    (0, access_point_1.restartHotspot)();
-    (0, fs_1.writeFileSync)("./config.json", JSON.stringify({
-        reboot: true
-    }));
+    try {
+        const ssid = await (0, access_point_1.configureHotspotSSID)();
+        const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid });
+        await (0, access_point_1.stopWifiHotspot)();
+        await (0, dhcpcd_1.updateDHCPCDConfig)(types_1.NetworkState.ACCESS_POINT, dhcpcdConfig);
+        await (0, access_point_1.disableAvahid)();
+        await (0, access_point_1.stopAvahid)();
+        (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
+        (0, access_point_1.restartHotspot)();
+        (0, fs_1.writeFileSync)("./config.json", JSON.stringify({
+            reboot: true
+        }));
+    }
+    catch (error) {
+        console.log(error);
+    }
 };
 app.listen(port, async () => {
     const { reboot } = await Promise.resolve().then(() => __importStar(require("./config.json")));
