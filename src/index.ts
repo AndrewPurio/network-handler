@@ -5,7 +5,7 @@ import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, 
 import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
-import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, getWlanStatus, killWpaSupplicant, resetWpaSupplicant, setUserTimezone, wifiDHCPCDTemplate } from "./utils/wifi"
+import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, getWlanStatus, killWpaSupplicant, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "./utils/wifi"
 
 const app = express()
 const port = 3001
@@ -115,7 +115,7 @@ app.post("/wifi", async (request, response) => {
 })
 
 app.get("/wifi/scan", async (request, response) => {
-    const wifiList = await getWlanStatus()
+    const { stdout: wifiList } = await scanWifi()
 
     response.json(wifiList)
 })

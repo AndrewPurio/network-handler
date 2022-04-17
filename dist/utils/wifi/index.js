@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.loadWpaSupplicantConfig = exports.resetWpaSupplicant = exports.wifiDHCPCDTemplate = exports.createWpaSupplicantTemplate = exports.setUserTimezone = exports.extractEncodedPsk = exports.encodeWifiCredentials = exports.getWlanStatus = exports.killWpaSupplicant = void 0;
+exports.loadWpaSupplicantConfig = exports.resetWpaSupplicant = exports.wifiDHCPCDTemplate = exports.createWpaSupplicantTemplate = exports.setUserTimezone = exports.extractEncodedPsk = exports.encodeWifiCredentials = exports.scanWifi = exports.getWlanStatus = exports.killWpaSupplicant = void 0;
 const mustache_1 = require("mustache");
 const access_point_1 = require("../access_point");
 const dhcpcd_1 = require("../dhcpcd");
@@ -21,6 +21,11 @@ const getWlanStatus = async () => {
     return wifiStatusObject;
 };
 exports.getWlanStatus = getWlanStatus;
+const scanWifi = async () => {
+    const { stdout, stderr } = await (0, execute_1.execute)("iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'");
+    return { stdout, stderr };
+};
+exports.scanWifi = scanWifi;
 const encodeWifiCredentials = async ({ ssid, password }) => {
     const { stdout, stderr } = await (0, execute_1.execute)(`wpa_passphrade '${ssid}' '${password}'`);
     return stdout;

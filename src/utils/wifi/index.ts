@@ -24,6 +24,12 @@ export const getWlanStatus = async () => {
     return wifiStatusObject
 }
 
+export const scanWifi = async () => {
+    const { stdout, stderr } = await execute("iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'")
+
+    return { stdout, stderr }
+}
+
 export const encodeWifiCredentials = async ({ ssid, password }: WifiCredentials) => {
     const { stdout, stderr } = await execute(`wpa_passphrade '${ssid}' '${password}'`)
 
