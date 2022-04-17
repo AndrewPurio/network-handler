@@ -95,8 +95,15 @@ app.post("/wifi", async (request, response) => {
     }
 });
 app.get("/wifi/scan", async (request, response) => {
-    const wifiList = await (0, wifi_1.scanWifi)();
-    response.json(wifiList);
+    try {
+        const wifiList = await (0, wifi_1.scanWifi)();
+        response.json(wifiList);
+    }
+    catch (e) {
+        const error = e;
+        response.status(500);
+        response.json(error.message);
+    }
 });
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);

@@ -115,9 +115,17 @@ app.post("/wifi", async (request, response) => {
 })
 
 app.get("/wifi/scan", async (request, response) => {
-    const wifiList = await scanWifi()
+    try {
+        const wifiList = await scanWifi()
 
-    response.json(wifiList)
+        response.json(wifiList)
+    } catch (e) {
+        const error = e as Error
+
+        response.status(500)
+        response.json(error.message)
+    }
+
 })
 
 app.listen(port, async () => {
