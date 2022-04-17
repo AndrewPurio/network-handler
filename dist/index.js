@@ -20,10 +20,6 @@ app.get("/wifi", async (request, response) => {
     response.json(wifiStatus);
 });
 app.get("/access_point", async (request, response) => {
-    setAccessPoint();
-    response.json("Success");
-});
-const setAccessPoint = async () => {
     const dhcpcdConfig = {
         staticIpAddress: config_1.staticIpAddress
     };
@@ -38,10 +34,70 @@ const setAccessPoint = async () => {
         await (0, wifi_1.killWpaSupplicant)();
         (0, access_point_1.restartHotspot)();
     }
-    catch (error) {
-        console.log(error);
+    catch (e) {
+        const error = e;
+        response.status(400);
+        response.json(error.message);
     }
-};
+    response.json("Success");
+});
+app.post("/wifi", async (request, response) => {
+    const { body } = request;
+    const { ssid, password, country, timezone } = body;
+    if (!ssid) {
+        response.status(400);
+        response.json({
+            message: "Missing ssid in json body"
+        });
+        return;
+    }
+    if (!password) {
+        response.status(400);
+        response.json({
+            message: "Missing password in json body"
+        });
+        return;
+    }
+    if (!country) {
+        response.status(400);
+        response.json({
+            message: "Missing country in json body"
+        });
+        return;
+    }
+    if (!timezone) {
+        response.status(400);
+        response.json({
+            message: "Missing timezone in json body"
+        });
+        return;
+    }
+    try {
+        const encodedCredentials = await (0, wifi_1.encodeWifiCredentials)({ ssid, password });
+        const encodedPsk = await (0, wifi_1.extractEncodedPsk)(encodedCredentials);
+        const wpaSupplicantTemplate = (0, wifi_1.createWpaSupplicantTemplate)({
+            ssid,
+            password: encodedPsk,
+            country
+        });
+        await (0, wifi_1.setUserTimezone)(timezone);
+        (0, fs_1.writeFileSync)("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate);
+        (0, fs_1.writeFileSync)("/etc/dhcpcd.conf", (0, wifi_1.wifiDHCPCDTemplate)());
+        await (0, wifi_1.resetWpaSupplicant)();
+        response.json({
+            message: "Successfully updated wifi credentials"
+        });
+    }
+    catch (e) {
+        const error = e;
+        response.status(400);
+        response.json(error.message);
+    }
+});
+app.get("/wifi/scan", async (request, response) => {
+    const wifiList = await (0, wifi_1.getWlanStatus)();
+    response.json(wifiList);
+});
 app.listen(port, async () => {
     console.log(`> Ready on http://localhost:${port}`);
 });
