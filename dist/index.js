@@ -48,11 +48,12 @@ app.post("/test", (request, response) => {
     console.log("Body:", body);
     response.json("Test response");
 });
-app.get("/access_point", (request, response) => {
+app.get("/access_point", async (request, response) => {
     (0, fs_1.writeFileSync)("./config.json", JSON.stringify({
         reboot: false
     }));
-    response.json("Success");
+    const config = await Promise.resolve().then(() => __importStar(require("./config.json")));
+    response.json(config);
     (0, systemctl_1.deviceReboot)();
 });
 const setAccessPoint = async () => {

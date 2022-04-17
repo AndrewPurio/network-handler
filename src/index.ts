@@ -29,12 +29,14 @@ app.post("/test", (request, response) => {
     response.json("Test response")
 })
 
-app.get("/access_point", (request, response) => {
+app.get("/access_point", async (request, response) => {
     writeFileSync("./config.json", JSON.stringify({
         reboot: false
     }))
 
-    response.json("Success")
+    const config = await import("./config.json")
+
+    response.json(config)
     deviceReboot()
 })
 
@@ -54,7 +56,7 @@ const setAccessPoint = async () => {
     writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
 
     restartHotspot()
-    
+
     writeFileSync("./config.json", JSON.stringify({
         reboot: true
     }))
