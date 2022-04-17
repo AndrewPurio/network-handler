@@ -108,7 +108,8 @@ const configureHotspotSSID = async () => {
     const serialNumber = stdout.replace(/\s/, "");
     const last_4_characters = /\w{4}$/;
     const id = last_4_characters.exec(serialNumber);
-    console.log("Serial Number:", serialNumber, id);
+    console.log("Serial Number:", serialNumber);
+    console.log("Id:", id);
     if (!id)
         throw new Error("Failed to get the device serial number");
     const ssid = `Rest_Node_${id[0]}`;
