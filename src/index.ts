@@ -31,13 +31,9 @@ app.post("/test", (request, response) => {
 })
 
 app.get("/access_point", async (request, response) => {
-    writeFileSync("./config.json", JSON.stringify({
-        reboot: false
-    }))
+    setAccessPoint()
 
-    const config = await import("./config.json")
-
-    response.json(config)
+    response.json("Success")
 })
 
 const setAccessPoint = async () => {
@@ -68,13 +64,5 @@ const setAccessPoint = async () => {
 }
 
 app.listen(port, async () => {
-    const { reboot } = await import("./config.json")
-
-    console.log("Reboot before setup:", reboot)
-
-    if (!reboot) {
-        setAccessPoint()
-    }
-
     console.log(`> Ready on http://localhost:${port}`);
 })
