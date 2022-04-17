@@ -23,6 +23,7 @@ const getWlanStatus = async () => {
 exports.getWlanStatus = getWlanStatus;
 const scanWifi = async () => {
     try {
+        await (0, execute_1.execute)("sudo ifconfig wlan0 up");
         const { stdout, stderr } = await (0, execute_1.execute)("sudo iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'");
         const wifiStrData = stdout;
         const wifiDataParser = /Cell \d+ - Address: (\w{2}:?)+\n +Quality=\d{2}\/\d{2}  Signal level=[\w- ]+\n +Encryption key:\w{2,3}\n +ESSID:".+"\n +Extra: Last beacon: \d+ms ago/g;
