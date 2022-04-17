@@ -22,8 +22,39 @@ const getWlanStatus = async () => {
 };
 exports.getWlanStatus = getWlanStatus;
 const scanWifi = async () => {
-    const { stdout, stderr } = await (0, execute_1.execute)("iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'");
-    return { stdout, stderr };
+    try {
+        const { stdout, stderr } = await (0, execute_1.execute)("iwlist wlan0 scanning | egrep 'Cell |Encryption|Quality|Last beacon|ESSID'");
+        const wifiStrData = stdout;
+        const wifiDataParser = /Cell \d+ - Address: (\w{2}:?)+\n +Quality=\d{2}\/\d{2}  Signal level=[\w- ]+\n +Encryption key:\w{2,3}\n +ESSID:".+"\n +Extra: Last beacon: \d+ms ago/g;
+        const patterns = {
+            address: /(?<=Address: )(\w{2}:?)+/,
+            signal_quality: /(?<=Quality=)\d{2}\/\d{2}/,
+            signal_level: /(?<=Signal level=)[+\d-]+(?= dBm)/,
+            encryption_key: /(?<=Encryption key:)\w{2,3}/,
+            SSID: /(?<=ESSID:").+?(?=")/,
+            last_beacon: /(?<=Extra: Last beacon: )\d+ms(?= ago)/
+        };
+        const wifiData = wifiStrData.match(wifiDataParser) || [];
+        return wifiData.map((wifiData) => {
+            const wifi_json = {
+                address: "",
+                signal_quality: "",
+                signal_level: "",
+                encryption_key: "",
+                SSID: "",
+                last_beacon: ""
+            };
+            for (let key in patterns) {
+                const newKey = key;
+                const [data] = patterns[newKey].exec(wifiData) || [];
+                wifi_json[newKey] = data;
+            }
+            return wifi_json;
+        });
+    }
+    catch (error) {
+        throw error;
+    }
 };
 exports.scanWifi = scanWifi;
 const encodeWifiCredentials = async ({ ssid, password }) => {

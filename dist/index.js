@@ -95,7 +95,7 @@ app.post("/wifi", async (request, response) => {
     }
 });
 app.get("/wifi/scan", async (request, response) => {
-    const { stdout: wifiList } = await (0, wifi_1.scanWifi)();
+    const wifiList = await (0, wifi_1.scanWifi)();
     response.json(wifiList);
 });
 app.listen(port, async () => {
