@@ -32,12 +32,14 @@ app.get("/access_point", async (request, response) => {
         await (0, access_point_1.stopAvahid)();
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
         await (0, wifi_1.killWpaSupplicant)();
-        (0, access_point_1.restartHotspot)();
     }
     catch (e) {
         const error = e;
         response.status(400);
         response.json(error.message);
+    }
+    finally {
+        (0, access_point_1.restartHotspot)();
     }
     response.json("Success");
 });

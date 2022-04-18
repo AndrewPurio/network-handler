@@ -36,12 +36,13 @@ app.get("/access_point", async (request, response) => {
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         await killWpaSupplicant()
 
-        restartHotspot()
     } catch (e) {
         const error = e as Error
         response.status(400)
 
         response.json(error.message)
+    } finally {
+        restartHotspot()
     }
 
     response.json("Success")
@@ -100,7 +101,7 @@ app.post("/wifi", async (request, response) => {
 
         writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
         writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
-        
+
         response.json({
             message: "Successfully updated wifi credentials"
         })
