@@ -88,33 +88,24 @@ app.post("/wifi", async (request, response) => {
         return
     }
 
-    try {
-        const encodedCredentials = await encodeWifiCredentials({ ssid, password })
-        const encodedPsk = await extractEncodedPsk(encodedCredentials)
-        const wpaSupplicantTemplate = createWpaSupplicantTemplate({
-            ssid,
-            password: encodedPsk,
-            country
-        })
+    const encodedCredentials = await encodeWifiCredentials({ ssid, password })
+    const encodedPsk = await extractEncodedPsk(encodedCredentials)
+    const wpaSupplicantTemplate = createWpaSupplicantTemplate({
+        ssid,
+        password: encodedPsk,
+        country
+    })
 
-        await setUserTimezone(timezone)
+    await setUserTimezone(timezone)
 
-        writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
-        writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
+    writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
+    writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
 
-        response.json({
-            message: "Successfully updated wifi credentials"
-        })
+    response.json({
+        message: "Successfully updated wifi credentials"
+    })
 
-        await resetWpaSupplicant()
-
-        return
-    } catch (e) {
-        const error = e as Error
-        response.status(400)
-
-        response.json(error.message)
-    }
+    await resetWpaSupplicant()
 })
 
 app.get("/wifi/scan", async (request, response) => {

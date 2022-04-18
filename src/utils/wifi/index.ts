@@ -118,14 +118,18 @@ interface wlan0`
 }
 
 export const resetWpaSupplicant = async () => {
-    await enableProcess("avahi-daemon")
-    await startProcess("avahi-daemon")
-    await stopDnsMasq()
-    await stopHostapd()
-    await killWpaSupplicant()
-    await restartDHCPCD()
+    try {
+        await enableProcess("avahi-daemon")
+        await startProcess("avahi-daemon")
+        await stopDnsMasq()
+        await stopHostapd()
+        await killWpaSupplicant()
+        await restartDHCPCD()
 
-    await loadWpaSupplicantConfig()
+        await loadWpaSupplicantConfig()
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 export const loadWpaSupplicantConfig = async () => {

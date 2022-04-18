@@ -106,13 +106,18 @@ interface wlan0`;
 };
 exports.wifiDHCPCDTemplate = wifiDHCPCDTemplate;
 const resetWpaSupplicant = async () => {
-    await (0, systemctl_1.enableProcess)("avahi-daemon");
-    await (0, systemctl_1.startProcess)("avahi-daemon");
-    await (0, access_point_1.stopDnsMasq)();
-    await (0, access_point_1.stopHostapd)();
-    await (0, exports.killWpaSupplicant)();
-    await (0, dhcpcd_1.restartDHCPCD)();
-    await (0, exports.loadWpaSupplicantConfig)();
+    try {
+        await (0, systemctl_1.enableProcess)("avahi-daemon");
+        await (0, systemctl_1.startProcess)("avahi-daemon");
+        await (0, access_point_1.stopDnsMasq)();
+        await (0, access_point_1.stopHostapd)();
+        await (0, exports.killWpaSupplicant)();
+        await (0, dhcpcd_1.restartDHCPCD)();
+        await (0, exports.loadWpaSupplicantConfig)();
+    }
+    catch (error) {
+        console.log(error);
+    }
 };
 exports.resetWpaSupplicant = resetWpaSupplicant;
 const loadWpaSupplicantConfig = async () => {

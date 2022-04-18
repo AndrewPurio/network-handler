@@ -74,28 +74,20 @@ app.post("/wifi", async (request, response) => {
         });
         return;
     }
-    try {
-        const encodedCredentials = await (0, wifi_1.encodeWifiCredentials)({ ssid, password });
-        const encodedPsk = await (0, wifi_1.extractEncodedPsk)(encodedCredentials);
-        const wpaSupplicantTemplate = (0, wifi_1.createWpaSupplicantTemplate)({
-            ssid,
-            password: encodedPsk,
-            country
-        });
-        await (0, wifi_1.setUserTimezone)(timezone);
-        (0, fs_1.writeFileSync)("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate);
-        (0, fs_1.writeFileSync)("/etc/dhcpcd.conf", (0, wifi_1.wifiDHCPCDTemplate)());
-        response.json({
-            message: "Successfully updated wifi credentials"
-        });
-        await (0, wifi_1.resetWpaSupplicant)();
-        return;
-    }
-    catch (e) {
-        const error = e;
-        response.status(400);
-        response.json(error.message);
-    }
+    const encodedCredentials = await (0, wifi_1.encodeWifiCredentials)({ ssid, password });
+    const encodedPsk = await (0, wifi_1.extractEncodedPsk)(encodedCredentials);
+    const wpaSupplicantTemplate = (0, wifi_1.createWpaSupplicantTemplate)({
+        ssid,
+        password: encodedPsk,
+        country
+    });
+    await (0, wifi_1.setUserTimezone)(timezone);
+    (0, fs_1.writeFileSync)("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate);
+    (0, fs_1.writeFileSync)("/etc/dhcpcd.conf", (0, wifi_1.wifiDHCPCDTemplate)());
+    response.json({
+        message: "Successfully updated wifi credentials"
+    });
+    await (0, wifi_1.resetWpaSupplicant)();
 });
 app.get("/wifi/scan", async (request, response) => {
     try {
