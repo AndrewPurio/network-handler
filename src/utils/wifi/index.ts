@@ -124,11 +124,11 @@ export const resetWpaSupplicant = async () => {
         await stopDnsMasq()
         await stopHostapd()
         await killWpaSupplicant()
-        await restartDHCPCD()
-
-        await loadWpaSupplicantConfig()
     } catch (error) {
         console.log(error)
+    } finally {
+        await restartDHCPCD()
+        await loadWpaSupplicantConfig()
     }
 }
 

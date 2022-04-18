@@ -112,11 +112,13 @@ const resetWpaSupplicant = async () => {
         await (0, access_point_1.stopDnsMasq)();
         await (0, access_point_1.stopHostapd)();
         await (0, exports.killWpaSupplicant)();
-        await (0, dhcpcd_1.restartDHCPCD)();
-        await (0, exports.loadWpaSupplicantConfig)();
     }
     catch (error) {
         console.log(error);
+    }
+    finally {
+        await (0, dhcpcd_1.restartDHCPCD)();
+        await (0, exports.loadWpaSupplicantConfig)();
     }
 };
 exports.resetWpaSupplicant = resetWpaSupplicant;
