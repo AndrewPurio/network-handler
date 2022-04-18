@@ -107,6 +107,8 @@ app.post("/wifi", async (request, response) => {
         })
 
         await resetWpaSupplicant()
+
+        return
     } catch (e) {
         const error = e as Error
         response.status(400)

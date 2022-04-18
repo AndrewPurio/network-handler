@@ -89,6 +89,7 @@ app.post("/wifi", async (request, response) => {
             message: "Successfully updated wifi credentials"
         });
         await (0, wifi_1.resetWpaSupplicant)();
+        return;
     }
     catch (e) {
         const error = e;
