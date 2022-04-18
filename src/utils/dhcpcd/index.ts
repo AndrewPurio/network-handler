@@ -3,6 +3,7 @@ import { DHCPCDHostapdConfig } from "../access_point/types"
 import { dhcpcdFilePath, NetworkState } from "./types"
 import { writeFileSync } from "fs"
 import { restartProcess } from "../systemctl"
+import { execute } from "../execute"
 
 export const updateDHCPCDConfig = (state: NetworkState, config: DHCPCDHostapdConfig) => {
     const contents = state === NetworkState.ACCESS_POINT ? createDHCPCDConfigForHostapd(config): ""
@@ -11,7 +12,7 @@ export const updateDHCPCDConfig = (state: NetworkState, config: DHCPCDHostapdCon
 }
 
 export const restartDHCPCD = async () => {
-    const { stdout, stderr } = await restartProcess("dhcpcd")
+    const { stdout, stderr } = await execute("sudo service dhcpcd restart")
 
     return {
         stdout, stderr
