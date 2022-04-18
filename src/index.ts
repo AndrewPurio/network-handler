@@ -133,7 +133,7 @@ app.listen(port, async () => {
     console.log("Id:", id, ssid)
 
     if(id && id !== currentId ) {
-        const hostapdConf = createHostapdConf({ ssid })
+        const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
     
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         restartHotspot()

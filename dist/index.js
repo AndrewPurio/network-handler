@@ -108,7 +108,7 @@ app.listen(port, async () => {
     const [currentId] = last_4_characters.exec(ssid) || [];
     console.log("Id:", id, ssid);
     if (id && id !== currentId) {
-        const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid });
+        const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid: await (0, access_point_1.configureHotspotSSID)() });
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
         (0, access_point_1.restartHotspot)();
     }
