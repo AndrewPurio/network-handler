@@ -10,6 +10,7 @@ const access_point_1 = require("./utils/access_point");
 const config_1 = require("./utils/access_point/config");
 const dhcpcd_1 = require("./utils/dhcpcd");
 const types_1 = require("./utils/dhcpcd/types");
+const execute_1 = require("./utils/execute");
 const systemctl_1 = require("./utils/systemctl");
 const wifi_1 = require("./utils/wifi");
 const app = (0, express_1.default)();
@@ -102,9 +103,10 @@ app.listen(port, async () => {
     const serialNumber = stdout.replace(/\s/, "") || [];
     const last_4_characters = /\w{4}\b/;
     const [id] = last_4_characters.exec(serialNumber) || [];
-    const ssid = await (0, access_point_1.configureHotspotSSID)();
+    const { stdout: hostapdConf } = await (0, execute_1.execute)("cat /etc/hostapd/hostapd.conf");
+    const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || [];
     const [currentId] = last_4_characters.exec(ssid) || [];
-    console.log("Id:", id, currentId);
+    console.log("Id:", id, ssid);
     if (id && id !== currentId) {
         const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid });
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);

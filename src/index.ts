@@ -5,6 +5,7 @@ import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, 
 import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
+import { execute } from "./utils/execute"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, getWlanStatus, killWpaSupplicant, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "./utils/wifi"
 
@@ -125,10 +126,11 @@ app.listen(port, async () => {
     const last_4_characters = /\w{4}\b/
     const [ id ] = last_4_characters.exec(serialNumber) || []
 
-    const ssid = await configureHotspotSSID()
+    const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
+    const [ ssid ] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
     const [ currentId ] = last_4_characters.exec(ssid) || []
 
-    console.log("Id:", id, currentId)
+    console.log("Id:", id, ssid)
 
     if(id && id !== currentId ) {
         const hostapdConf = createHostapdConf({ ssid })
