@@ -115,7 +115,6 @@ export const configureHotspotSSID = async () => {
     const id = last_4_characters.exec(serialNumber)
 
     console.log("Serial Number:", serialNumber)
-    console.log("Id:", id)
 
     if (!id)
         throw new Error("Failed to get the device serial number")

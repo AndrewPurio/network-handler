@@ -5,6 +5,7 @@ import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, 
 import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
+import { getDeviceSerialNumber } from "./utils/systemctl"
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, getWlanStatus, killWpaSupplicant, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "./utils/wifi"
 
 const app = express()
@@ -25,22 +26,17 @@ app.get("/access_point", async (request, response) => {
     }
 
     try {
-        const ssid = await configureHotspotSSID()
-        const hostapdConf = createHostapdConf({ ssid })
-
         await stopWifiHotspot()
         await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
         await disableAvahid()
         await stopAvahid()
 
-        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         await killWpaSupplicant()
 
     } catch (e) {
         const error = e as Error
-        response.status(400)
-
-        response.json(error.message)
+        
+        console.log(error)
     } finally {
         restartHotspot()
     }
@@ -123,5 +119,21 @@ app.get("/wifi/scan", async (request, response) => {
 })
 
 app.listen(port, async () => {
+    const { stdout } = await getDeviceSerialNumber()
+    const serialNumber = stdout.replace(/\s/, "") || []
+
+    const last_4_characters = /\w{4}\b/
+    const [ id ] = last_4_characters.exec(serialNumber) || []
+
+    const ssid = await configureHotspotSSID()
+    const [ currentId ] = last_4_characters.exec(ssid) || []
+
+    if(id && id !== currentId ) {
+        const hostapdConf = createHostapdConf({ ssid })
+    
+        writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
+        restartHotspot()
+    }
+
     console.log(`> Ready on http://localhost:${port}`);
 })
