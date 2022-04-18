@@ -128,6 +128,8 @@ app.listen(port, async () => {
     const ssid = await configureHotspotSSID()
     const [ currentId ] = last_4_characters.exec(ssid) || []
 
+    console.log("Id:", id, currentId)
+
     if(id && id !== currentId ) {
         const hostapdConf = createHostapdConf({ ssid })
     
