@@ -59,7 +59,7 @@ const scanWifi = async () => {
 };
 exports.scanWifi = scanWifi;
 const encodeWifiCredentials = async ({ ssid, password }) => {
-    const { stdout, stderr } = await (0, execute_1.execute)(`wpa_passphrade '${ssid}' '${password}'`);
+    const { stdout, stderr } = await (0, execute_1.execute)(`wpa_passphrase '${ssid}' '${password}'`);
     return stdout;
 };
 exports.encodeWifiCredentials = encodeWifiCredentials;
