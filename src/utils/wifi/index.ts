@@ -127,8 +127,10 @@ export const resetWpaSupplicant = async () => {
     } catch (error) {
         console.log(error)
     } finally {
-        await restartDHCPCD()
-        await loadWpaSupplicantConfig()
+        setTimeout(async () => {
+            await restartDHCPCD()
+            await loadWpaSupplicantConfig()
+        }, 1000)
     }
 }
 
