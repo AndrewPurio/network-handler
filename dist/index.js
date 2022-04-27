@@ -11,6 +11,7 @@ const config_1 = require("./utils/access_point/config");
 const dhcpcd_1 = require("./utils/dhcpcd");
 const types_1 = require("./utils/dhcpcd/types");
 const execute_1 = require("./utils/execute");
+const firewall_1 = require("./utils/firewall");
 const systemctl_1 = require("./utils/systemctl");
 const wifi_1 = require("./utils/wifi");
 const app = (0, express_1.default)();
@@ -37,6 +38,7 @@ app.get("/access_point", async (request, response) => {
         console.log(error);
     }
     finally {
+        await (0, firewall_1.disableFirewall)();
         (0, access_point_1.restartHotspot)();
     }
     response.json("Success");
@@ -85,6 +87,7 @@ app.post("/wifi", async (request, response) => {
     response.json({
         message: "Successfully updated wifi credentials"
     });
+    await (0, firewall_1.enableFirewall)();
     await (0, wifi_1.resetWpaSupplicant)();
 });
 app.get("/wifi/scan", async (request, response) => {

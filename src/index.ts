@@ -6,6 +6,7 @@ import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
 import { execute } from "./utils/execute"
+import { disableFirewall, enableFirewall } from "./utils/firewall"
 import { getDeviceSerialNumber } from "./utils/systemctl"
 import { createWpaSupplicantTemplate, encodeWifiCredentials, extractEncodedPsk, getWlanStatus, killWpaSupplicant, resetWpaSupplicant, scanWifi, setUserTimezone, wifiDHCPCDTemplate } from "./utils/wifi"
 
@@ -39,6 +40,7 @@ app.get("/access_point", async (request, response) => {
         
         console.log(error)
     } finally {
+        await disableFirewall()
         restartHotspot()
     }
 
@@ -102,6 +104,7 @@ app.post("/wifi", async (request, response) => {
         message: "Successfully updated wifi credentials"
     })
 
+    await enableFirewall()
     await resetWpaSupplicant()
 })
 
