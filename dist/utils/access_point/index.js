@@ -119,7 +119,7 @@ const restartHotspot = async () => {
         await (0, exports.startHostapd)();
     }
     catch (error) {
-        console.log(error);
+        console.log("Restart Hotspot Error:", error);
     }
 };
 exports.restartHotspot = restartHotspot;

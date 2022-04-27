@@ -131,7 +131,7 @@ export const restartHotspot = async () => {
         await enableHostapd()
         await startHostapd()
     } catch(error) {
-        console.log(error)
+        console.log("Restart Hotspot Error:", error)
     }
     
 }
