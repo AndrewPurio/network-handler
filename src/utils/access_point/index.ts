@@ -125,8 +125,13 @@ export const configureHotspotSSID = async () => {
 }
 
 export const restartHotspot = async () => {
-    await restartDHCPCD()
-    await startDnsMasq()
-    await enableHostapd()
-    await startHostapd()
+    try {
+        await restartDHCPCD()
+        await startDnsMasq()
+        await enableHostapd()
+        await startHostapd()
+    } catch(error) {
+        console.log(error)
+    }
+    
 }
