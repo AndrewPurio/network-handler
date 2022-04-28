@@ -37,14 +37,14 @@ app.get("/access_point", async (request, response) => {
 
     } catch (e) {
         const error = e as Error
-        
+
         console.log(error)
     } finally {
+        response.json("Success")
+
         await disableFirewall()
         restartHotspot()
     }
-
-    response.json("Success")
 })
 
 app.post("/wifi", async (request, response) => {
@@ -127,17 +127,17 @@ app.listen(port, async () => {
     const serialNumber = stdout.replace(/\s/, "") || []
 
     const last_4_characters = /\w{4}\b/
-    const [ id ] = last_4_characters.exec(serialNumber) || []
+    const [id] = last_4_characters.exec(serialNumber) || []
 
     const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
-    const [ ssid ] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
-    const [ currentId ] = last_4_characters.exec(ssid) || []
+    const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
+    const [currentId] = last_4_characters.exec(ssid) || []
 
     console.log("Id:", id, ssid)
 
-    if(id && id !== currentId ) {
+    if (id && id !== currentId) {
         const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })
-    
+
         writeFileSync("/etc/hostapd/hostapd.conf", hostapdConf)
         restartHotspot()
     }

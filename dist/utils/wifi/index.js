@@ -120,7 +120,7 @@ const resetWpaSupplicant = async () => {
         setTimeout(async () => {
             await (0, dhcpcd_1.restartDHCPCD)();
             await (0, exports.loadWpaSupplicantConfig)();
-        }, 1000);
+        }, 500);
     }
 };
 exports.resetWpaSupplicant = resetWpaSupplicant;

@@ -38,10 +38,10 @@ app.get("/access_point", async (request, response) => {
         console.log(error);
     }
     finally {
+        response.json("Success");
         await (0, firewall_1.disableFirewall)();
         (0, access_point_1.restartHotspot)();
     }
-    response.json("Success");
 });
 app.post("/wifi", async (request, response) => {
     const { body } = request;
