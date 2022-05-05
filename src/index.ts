@@ -1,7 +1,8 @@
+import e from "cors"
 import cors from "cors"
 import express from 'express'
 import { writeFileSync } from "fs"
-import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, disableAvahid, enableHostapd, restartHotspot, startDnsMasq, startHostapd, stopAvahid, stopWifiHotspot } from "./utils/access_point"
+import { configureHotspotSSID, createDHCPCDConfigForHostapd, createHostapdConf, disableAvahid, enableAvahid, enableHostapd, restartHotspot, startAvahid, startDnsMasq, startHostapd, stopAvahid, stopWifiHotspot } from "./utils/access_point"
 import { staticIpAddress } from "./utils/access_point/config"
 import { updateDHCPCDConfig } from "./utils/dhcpcd"
 import { NetworkState } from "./utils/dhcpcd/types"
@@ -99,6 +100,9 @@ app.post("/wifi", async (request, response) => {
 
     writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
     writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
+
+    await enableAvahid()
+    await startAvahid()
 
     response.json({
         message: "Successfully updated wifi credentials"

@@ -3,7 +3,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.restartHotspot = exports.configureHotspotSSID = exports.stopWifiHotspot = exports.stopAvahid = exports.disableAvahid = exports.stopHostapd = exports.startHostapd = exports.enableHostapd = exports.stopDnsMasq = exports.startDnsMasq = exports.createHostapdConf = exports.createDHCPCDConfigForHostapd = void 0;
+exports.restartHotspot = exports.configureHotspotSSID = exports.stopWifiHotspot = exports.startAvahid = exports.enableAvahid = exports.stopAvahid = exports.disableAvahid = exports.stopHostapd = exports.startHostapd = exports.enableHostapd = exports.stopDnsMasq = exports.startDnsMasq = exports.createHostapdConf = exports.createDHCPCDConfigForHostapd = void 0;
 const mustache_1 = __importDefault(require("mustache"));
 const dhcpcd_1 = require("../dhcpcd");
 const systemctl_1 = require("../systemctl");
@@ -94,6 +94,20 @@ const stopAvahid = async () => {
     };
 };
 exports.stopAvahid = stopAvahid;
+const enableAvahid = async () => {
+    const { stdout, stderr } = await (0, systemctl_1.enableProcess)("avahi-daemon");
+    return {
+        stdout, stderr
+    };
+};
+exports.enableAvahid = enableAvahid;
+const startAvahid = async () => {
+    const { stdout, stderr } = await (0, systemctl_1.startProcess)("avahi-daemon");
+    return {
+        stdout, stderr
+    };
+};
+exports.startAvahid = startAvahid;
 const stopWifiHotspot = async () => {
     await (0, exports.stopDnsMasq)();
     await (0, exports.stopHostapd)();
