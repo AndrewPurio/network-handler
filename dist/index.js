@@ -84,13 +84,13 @@ app.post("/wifi", async (request, response) => {
     await (0, wifi_1.setUserTimezone)(timezone);
     (0, fs_1.writeFileSync)("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate);
     (0, fs_1.writeFileSync)("/etc/dhcpcd.conf", (0, wifi_1.wifiDHCPCDTemplate)());
-    await (0, access_point_1.enableAvahid)();
-    await (0, access_point_1.startAvahid)();
     response.json({
         message: "Successfully updated wifi credentials"
     });
     await (0, firewall_1.enableFirewall)();
     await (0, wifi_1.resetWpaSupplicant)();
+    await (0, access_point_1.enableAvahid)();
+    await (0, access_point_1.startAvahid)();
 });
 app.get("/wifi/scan", async (request, response) => {
     try {

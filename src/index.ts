@@ -101,15 +101,14 @@ app.post("/wifi", async (request, response) => {
     writeFileSync("/etc/wpa_supplicant/wpa_supplicant.conf", wpaSupplicantTemplate)
     writeFileSync("/etc/dhcpcd.conf", wifiDHCPCDTemplate())
 
-    await enableAvahid()
-    await startAvahid()
-
     response.json({
         message: "Successfully updated wifi credentials"
     })
 
     await enableFirewall()
     await resetWpaSupplicant()
+    await enableAvahid()
+    await startAvahid()
 })
 
 app.get("/wifi/scan", async (request, response) => {
