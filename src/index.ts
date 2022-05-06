@@ -1,4 +1,3 @@
-import e from "cors"
 import cors from "cors"
 import express from 'express'
 import { writeFileSync } from "fs"
@@ -31,8 +30,7 @@ app.get("/access_point", async (request, response) => {
     try {
         await stopWifiHotspot()
         await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-        await disableAvahid()
-        await stopAvahid()
+        
 
         await killWpaSupplicant()
 
@@ -107,8 +105,6 @@ app.post("/wifi", async (request, response) => {
 
     await enableFirewall()
     await resetWpaSupplicant()
-    await enableAvahid()
-    await startAvahid()
 })
 
 app.get("/wifi/scan", async (request, response) => {
@@ -135,8 +131,6 @@ app.listen(port, async () => {
     const { stdout: hostapdConf } = await execute("cat /etc/hostapd/hostapd.conf")
     const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || []
     const [currentId] = last_4_characters.exec(ssid) || []
-
-    console.log("Id:", id, ssid)
 
     if (id && id !== currentId) {
         const hostapdConf = createHostapdConf({ ssid: await configureHotspotSSID() })

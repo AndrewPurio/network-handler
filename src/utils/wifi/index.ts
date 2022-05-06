@@ -1,5 +1,5 @@
 import { render } from "mustache"
-import { stopDnsMasq, stopHostapd } from "../access_point"
+import { enableAvahid, startAvahid, stopDnsMasq, stopHostapd } from "../access_point"
 import { restartDHCPCD } from "../dhcpcd"
 import { execute } from "../execute"
 import { enableProcess, startProcess } from "../systemctl"
@@ -129,6 +129,8 @@ export const resetWpaSupplicant = async () => {
     } finally {
         setTimeout(async () => {
             await restartDHCPCD()
+            await enableAvahid()
+            await startAvahid()
             await loadWpaSupplicantConfig()
         }, 500)
     }

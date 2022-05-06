@@ -29,8 +29,6 @@ app.get("/access_point", async (request, response) => {
     try {
         await (0, access_point_1.stopWifiHotspot)();
         await (0, dhcpcd_1.updateDHCPCDConfig)(types_1.NetworkState.ACCESS_POINT, dhcpcdConfig);
-        await (0, access_point_1.disableAvahid)();
-        await (0, access_point_1.stopAvahid)();
         await (0, wifi_1.killWpaSupplicant)();
     }
     catch (e) {
@@ -89,8 +87,6 @@ app.post("/wifi", async (request, response) => {
     });
     await (0, firewall_1.enableFirewall)();
     await (0, wifi_1.resetWpaSupplicant)();
-    await (0, access_point_1.enableAvahid)();
-    await (0, access_point_1.startAvahid)();
 });
 app.get("/wifi/scan", async (request, response) => {
     try {
@@ -111,7 +107,6 @@ app.listen(port, async () => {
     const { stdout: hostapdConf } = await (0, execute_1.execute)("cat /etc/hostapd/hostapd.conf");
     const [ssid] = /(?<=ssid=)\w+/.exec(hostapdConf) || [];
     const [currentId] = last_4_characters.exec(ssid) || [];
-    console.log("Id:", id, ssid);
     if (id && id !== currentId) {
         const hostapdConf = (0, access_point_1.createHostapdConf)({ ssid: await (0, access_point_1.configureHotspotSSID)() });
         (0, fs_1.writeFileSync)("/etc/hostapd/hostapd.conf", hostapdConf);
