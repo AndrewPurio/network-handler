@@ -30,7 +30,7 @@ app.get("/access_point", async (request, response) => {
     try {
         await stopWifiHotspot()
         await updateDHCPCDConfig(NetworkState.ACCESS_POINT, dhcpcdConfig)
-        
+
 
         await killWpaSupplicant()
 
@@ -103,6 +103,8 @@ app.post("/wifi", async (request, response) => {
         message: "Successfully updated wifi credentials"
     })
 
+    await enableAvahid()
+    await startAvahid()
     await enableFirewall()
     await resetWpaSupplicant()
 })

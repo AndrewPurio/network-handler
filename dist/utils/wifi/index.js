@@ -119,8 +119,6 @@ const resetWpaSupplicant = async () => {
     finally {
         setTimeout(async () => {
             await (0, dhcpcd_1.restartDHCPCD)();
-            await (0, access_point_1.enableAvahid)();
-            await (0, access_point_1.startAvahid)();
             await (0, exports.loadWpaSupplicantConfig)();
         }, 500);
     }

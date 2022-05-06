@@ -85,6 +85,8 @@ app.post("/wifi", async (request, response) => {
     response.json({
         message: "Successfully updated wifi credentials"
     });
+    await (0, access_point_1.enableAvahid)();
+    await (0, access_point_1.startAvahid)();
     await (0, firewall_1.enableFirewall)();
     await (0, wifi_1.resetWpaSupplicant)();
 });
