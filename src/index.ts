@@ -103,10 +103,15 @@ app.post("/wifi", async (request, response) => {
         message: "Successfully updated wifi credentials"
     })
 
-    await enableAvahid()
-    await startAvahid()
-    await enableFirewall()
-    await resetWpaSupplicant()
+    try {
+        await enableAvahid()
+        await startAvahid()
+        await enableFirewall()
+        await resetWpaSupplicant()
+    } catch (error) {
+        console.log("Wifi Error:", error)
+    }
+
 })
 
 app.get("/wifi/scan", async (request, response) => {
